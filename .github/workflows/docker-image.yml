@@ -1,4 +1,7 @@
-on: push
+on:
+  push:
+    branches:
+      - "main"
 
 jobs:
   docker:
@@ -18,4 +21,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: yayawallet/nodejs-server:latest
+          tags: yayawallet/nodejs-server:latest, yayawallet/nodejs-server:v${{github.run_number}}
