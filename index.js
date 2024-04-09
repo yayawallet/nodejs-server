@@ -2,15 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const {
   getProfile,
-  generateQrUrl,
+  searchUser,
   createTransaction,
-  getTransferList,
+  generateQrUrl,
   getTransactionListByUser,
+  getTransactionById,
+  getTransferList,
   externalAccountLookup,
   listInstitution,
   getTransferFee,
-  getTransactionById,
-  searchUser,
 } = require("@yayawallet/node-sdk");
 
 const app = express();
@@ -23,7 +23,7 @@ app.get("/", (req, res) => {
   res.json({ product: "Yayawallet Dashboard" });
 });
 
-app.get("/getProfile", async (req, res) => {
+app.get("/user/profile", async (req, res) => {
   try {
     const profile = await getProfile();
     res.send(profile);
@@ -32,18 +32,19 @@ app.get("/getProfile", async (req, res) => {
   }
 });
 
-app.post("/generateQrUrl", async (req, res) => {
+app.post("/user/search", async (req, res) => {
   try {
-    const { amount, cause } = req.body;
-    const QRCode = await generateQrUrl(amount, cause);
+    const query = req.body.query;
 
-    res.send(QRCode);
+    const usersList = await searchUser(query);
+
+    res.send(usersList);
   } catch (error) {
-    res.status(403).send(error.message);
+    res.status(404).send(error.message);
   }
 });
 
-app.post("/createTransaction", async (req, res) => {
+app.post("/transaction/create", async (req, res) => {
   try {
     const { receiver, amount, cause } = req.body;
     const transactionId = await createTransaction(receiver, amount, cause, []);
@@ -54,17 +55,18 @@ app.post("/createTransaction", async (req, res) => {
   }
 });
 
-app.get("/getTransferList", async (req, res) => {
+app.post("/transaction/qr-generate", async (req, res) => {
   try {
-    const list = await getTransferList();
+    const { amount, cause } = req.body;
+    const QRCode = await generateQrUrl(amount, cause);
 
-    res.send(list);
+    res.send(QRCode);
   } catch (error) {
-    res.status(404).send(error.message);
+    res.status(403).send(error.message);
   }
 });
 
-app.get("/getTransactionListByUser", async (req, res) => {
+app.get("/transaction/find-by-user", async (req, res) => {
   try {
     const transactionList = await getTransactionListByUser();
 
@@ -74,46 +76,7 @@ app.get("/getTransactionListByUser", async (req, res) => {
   }
 });
 
-app.post("/externalAccountLookup", async (req, res) => {
-  try {
-    const { institution_code, account_number } = req.body;
-
-    const account = await externalAccountLookup(
-      institution_code,
-      account_number,
-    );
-
-    res.send(account);
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
-app.post("/financialInstitutionList", async (req, res) => {
-  try {
-    const { country } = req.body;
-
-    const institutionList = await listInstitution(country);
-
-    res.send(institutionList);
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
-app.post("/getTransferFee", async (req, res) => {
-  try {
-    const { institution_code, amount } = req.body;
-
-    const transferFee = await getTransferFee(institution_code, amount);
-
-    res.send(transferFee);
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
-app.post("/getTransactionById", async (req, res) => {
+app.post("/transaction/find", async (req, res) => {
   try {
     const transactionID = req.body.transactionID;
 
@@ -125,13 +88,50 @@ app.post("/getTransactionById", async (req, res) => {
   }
 });
 
-app.post("/searchUser", async (req, res) => {
+app.get("/transfer", async (req, res) => {
   try {
-    const query = req.body.query;
+    const list = await getTransferList();
 
-    const usersList = await searchUser(query);
+    res.send(list);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
 
-    res.send(usersList);
+app.post("/transfer/lookup-external", async (req, res) => {
+  try {
+    const { institution_code, account_number } = req.body;
+
+    const account = await externalAccountLookup(
+      institution_code,
+      account_number
+    );
+
+    res.send(account);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+app.post("/financial-institution/list", async (req, res) => {
+  try {
+    const { country } = req.body;
+
+    const institutionList = await listInstitution(country);
+
+    res.send(institutionList);
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+app.post("/transfer/fee", async (req, res) => {
+  try {
+    const { institution_code, amount } = req.body;
+
+    const transferFee = await getTransferFee(institution_code, amount);
+
+    res.send(transferFee);
   } catch (error) {
     res.status(404).send(error.message);
   }
