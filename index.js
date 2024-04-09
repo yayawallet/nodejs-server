@@ -14,7 +14,6 @@ const {
 } = require("@yayawallet/node-sdk");
 
 const app = express();
-const port = 4040;
 
 app.use(express.json());
 app.use(cors());
@@ -137,6 +136,8 @@ app.post("/transfer/fee", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+const port = process.env.PORT || 4040;
+
+app.listen(4040, () => {
   console.log("App running on port " + port);
 });
