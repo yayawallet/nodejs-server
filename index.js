@@ -142,22 +142,15 @@ app.post("/transfer/fee", async (req, res) => {
 
 app.post("/airtime/buy", async (req, res) => {
   try {
-    const { phone, amount } = req.body;
+    const { phone, amount, package } = req.body;
 
-    const airtime = await buyAirtime(phone, amount);
+    if (package) {
+      const buy = await buyPackage(phone, package);
+    } else {
+      const buy = await buyAirtime(phone, amount);
+    }
 
-    res.status(200).send(airtime);
-  } catch (error) {
-    res.status(400).send(error.message);
-  }
-});
-
-app.post("/airtime/buy", async (req, res) => {
-  try {
-    const { phone, packageCode } = req.body;
-    const package = await buyPackage(phone, packageCode);
-
-    res.status(200).send(package);
+    res.status(200).send(buy);
   } catch (error) {
     res.status(400).send(error.message);
   }
