@@ -11,6 +11,10 @@ const {
   externalAccountLookup,
   listInstitution,
   getTransferFee,
+  buyAirtime,
+  buyPackage,
+  listPackges,
+  listRecharges,
 } = require("@yayawallet/node-sdk");
 
 const app = express();
@@ -133,6 +137,50 @@ app.post("/transfer/fee", async (req, res) => {
     res.send(transferFee);
   } catch (error) {
     res.status(404).send(error.message);
+  }
+});
+
+app.post("/airtime/buy", async (req, res) => {
+  try {
+    const { phone, amount } = req.body;
+
+    const airtime = await buyAirtime(phone, amount);
+
+    res.status(200).send(airtime);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.post("/airtime/buy", async (req, res) => {
+  try {
+    const { phone, packageCode } = req.body;
+    const package = await buyPackage(phone, packageCode);
+
+    res.status(200).send(package);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.post("/airtime/packages", async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const packages = await listPackges(phone);
+
+    res.status(200).send(packages);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.get("/airtime/list", async (req, res) => {
+  try {
+    const recharges = await listRecharges();
+
+    res.status(200).send(recharges);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
 
