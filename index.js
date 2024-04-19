@@ -91,7 +91,7 @@ app.post("/transaction/find", async (req, res) => {
   }
 });
 
-app.get("/transfer", async (req, res) => {
+app.get("/transfer/list", async (req, res) => {
   try {
     const list = await getTransferList();
 
