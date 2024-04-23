@@ -13,7 +13,7 @@ const {
   getTransferFee,
   buyAirtime,
   buyPackage,
-  listPackges,
+  listPackages,
   listRecharges,
 } = require("@yayawallet/node-sdk");
 
@@ -142,13 +142,21 @@ app.post("/transfer/fee", async (req, res) => {
 
 app.post("/airtime/buy", async (req, res) => {
   try {
-    const { phone, amount, package } = req.body;
+    const { phone, amount } = req.body;
 
-    if (package) {
-      const buy = await buyPackage(phone, package);
-    } else {
-      const buy = await buyAirtime(phone, amount);
-    }
+    const buy = await buyAirtime(phone, amount);
+
+    res.status(200).send(buy);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.post("/package/buy", async (req, res) => {
+  try {
+    const { phone, package } = req.body;
+
+    const buy = await buyPackage(phone, package);
 
     res.status(200).send(buy);
   } catch (error) {
@@ -159,7 +167,7 @@ app.post("/airtime/buy", async (req, res) => {
 app.post("/airtime/packages", async (req, res) => {
   try {
     const { phone } = req.body;
-    const packages = await listPackges(phone);
+    const packages = await listPackages(phone);
 
     res.status(200).send(packages);
   } catch (error) {
