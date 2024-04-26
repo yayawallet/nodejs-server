@@ -69,9 +69,11 @@ app.post("/transaction/qr-generate", async (req, res) => {
   }
 });
 
-app.get("/transaction/find-by-user", async (req, res) => {
+app.post("/transaction/find-by-user", async (req, res) => {
   try {
-    const transactionList = await getTransactionListByUser();
+    const page = req.body.page;
+
+    const transactionList = await getTransactionListByUser({ p: page });
 
     res.send(transactionList);
   } catch (error) {
