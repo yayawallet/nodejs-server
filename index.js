@@ -4,6 +4,7 @@ const {
   getProfile,
   searchUser,
   createTransaction,
+  searchTransaction,
   generateQrUrl,
   getTransactionListByUser,
   getTransactionById,
@@ -77,6 +78,19 @@ app.post("/transaction/find-by-user", async (req, res) => {
 
     res.send(transactionList);
   } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+app.post("/transaction/search", async (req, res) => {
+  try {
+    const query = req.body.query;
+
+    const result = await searchTransaction(query);
+
+    res.send(result);
+  } catch (error) {
+    console.log(error);
     res.status(404).send(error.message);
   }
 });
