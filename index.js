@@ -4,6 +4,7 @@ const {
   getProfile,
   searchUser,
   createTransaction,
+  searchTransaction,
   generateQrUrl,
   getTransactionListByUser,
   getTransactionById,
@@ -11,6 +12,10 @@ const {
   externalAccountLookup,
   listInstitution,
   getTransferFee,
+  buyAirtime,
+  buyPackage,
+  listPackages,
+  listRecharges,
 } = require("@yayawallet/node-sdk");
 
 const app = express();
@@ -65,12 +70,27 @@ app.post("/transaction/qr-generate", async (req, res) => {
   }
 });
 
-app.get("/transaction/find-by-user", async (req, res) => {
+app.post("/transaction/find-by-user", async (req, res) => {
   try {
-    const transactionList = await getTransactionListByUser();
+    const page = req.body.page;
+
+    const transactionList = await getTransactionListByUser({ p: page });
 
     res.send(transactionList);
   } catch (error) {
+    res.status(404).send(error.message);
+  }
+});
+
+app.post("/transaction/search", async (req, res) => {
+  try {
+    const query = req.body.query;
+
+    const result = await searchTransaction(query);
+
+    res.send(result);
+  } catch (error) {
+    console.log(error);
     res.status(404).send(error.message);
   }
 });
@@ -87,7 +107,7 @@ app.post("/transaction/find", async (req, res) => {
   }
 });
 
-app.get("/transfer", async (req, res) => {
+app.get("/transfer/list", async (req, res) => {
   try {
     const list = await getTransferList();
 
@@ -133,6 +153,51 @@ app.post("/transfer/fee", async (req, res) => {
     res.send(transferFee);
   } catch (error) {
     res.status(404).send(error.message);
+  }
+});
+
+app.post("/airtime/buy", async (req, res) => {
+  try {
+    const { phone, amount } = req.body;
+
+    const buy = await buyAirtime(phone, amount);
+
+    res.status(200).send(buy);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.post("/package/buy", async (req, res) => {
+  try {
+    const { phone, package } = req.body;
+
+    const buy = await buyPackage(phone, package);
+
+    res.status(200).send(buy);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+});
+
+app.post("/airtime/packages", async (req, res) => {
+  try {
+    const { phone } = req.body;
+    const packages = await listPackages(phone);
+
+    res.status(200).send(packages);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.get("/airtime/list", async (req, res) => {
+  try {
+    const recharges = await listRecharges();
+
+    res.status(200).send(recharges);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 });
 
