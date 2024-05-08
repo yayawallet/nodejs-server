@@ -6,6 +6,7 @@ const airtime = require("./routes/airtimeRoutes.js");
 const transaction = require("./routes/transactionRoutes.js");
 const transfer = require("./routes/transferRoutes.js");
 const institution = require("./routes/institutionRoutes.js");
+const scheduledPayment = require("./routes/scheduledPaymentRoutes.js");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/", airtime);
 app.use("/", transaction);
 app.use("/", transfer);
 app.use("/", institution);
+app.use("/", scheduledPayment);
 
 app.get("/", (req, res) => {
   res.json({ product: "Yayawallet SDK" });
