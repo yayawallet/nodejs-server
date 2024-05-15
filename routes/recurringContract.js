@@ -52,7 +52,7 @@ app.post("/recurring-contract/request-payment", async (req, res) => {
       meta_data,
     } = req.body;
 
-    const requestPayment = await requestPayment(
+    const payment = await requestPayment(
       contract_number,
       amount,
       currency,
@@ -61,9 +61,9 @@ app.post("/recurring-contract/request-payment", async (req, res) => {
       meta_data
     );
 
-    res.status(200).send(requestPayment);
+    res.status(200).send(payment);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(400).send(error.message);
   }
 });
 
