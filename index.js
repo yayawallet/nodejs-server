@@ -24,7 +24,7 @@ app.use("/", scheduledPayment);
 app.use("/", recurringContract);
 
 app.get("/", (req, res) => {
-  res.json({ product: "YaYa Wallet Node.js SDK" });
+  res.json({ product: "YaYa Wallet yayawallet-node-sdk" });
 });
 
 const port = process.env.PORT || 4040;
