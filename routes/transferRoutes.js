@@ -3,6 +3,7 @@ const {
   getTransferList,
   getTransferFee,
   externalAccountLookup,
+  transferAsUser,
 } = require("@yayawallet/node-sdk");
 
 const app = express();
@@ -41,6 +42,32 @@ app.post("/transfer/fee", async (req, res) => {
     res.send(transferFee);
   } catch (error) {
     res.status(404).send(error.message);
+  }
+});
+
+app.post("/transfer/send", async (req, res) => {
+  try {
+    const {
+      institution_code,
+      account_number,
+      amount,
+      ref_code,
+      sender_note,
+      phone,
+    } = req.body;
+
+    const transfer = await transferAsUser(
+      institution_code,
+      account_number,
+      amount,
+      ref_code,
+      sender_note,
+      phone
+    );
+
+    res.status(200).send(transfer);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 

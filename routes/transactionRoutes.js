@@ -31,11 +31,11 @@ app.post("/transaction/qr-generate", async (req, res) => {
   }
 });
 
-app.post("/transaction/find-by-user", async (req, res) => {
+app.get("/transaction/find-by-user/:p", async (req, res) => {
   try {
-    const page = req.body.page;
+    const p = req.params.p;
 
-    const transactionList = await getTransactionListByUser({ p: page });
+    const transactionList = await getTransactionListByUser({ p });
 
     res.send(transactionList);
   } catch (error) {
@@ -51,14 +51,13 @@ app.post("/transaction/search", async (req, res) => {
 
     res.send(result);
   } catch (error) {
-    console.log(error);
     res.status(404).send(error.message);
   }
 });
 
-app.post("/transaction/find", async (req, res) => {
+app.get("/transaction/find/:id", async (req, res) => {
   try {
-    const transactionID = req.body.transactionID;
+    const transactionID = req.params.id;
 
     const transaction = await getTransactionById(transactionID);
 
