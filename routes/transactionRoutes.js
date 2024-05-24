@@ -31,9 +31,9 @@ app.post("/transaction/qr-generate", async (req, res) => {
   }
 });
 
-app.get("/transaction/find-by-user/:p", async (req, res) => {
+app.get("/transaction/find-by-user", async (req, res) => {
   try {
-    const p = req.params.p;
+    const p = req.query.p;
 
     const transactionList = await getTransactionListByUser({ p });
 
