@@ -1,5 +1,5 @@
 const express = require("express");
-const { getProfile, searchUser } = require("@yayawallet/node-sdk");
+const { getProfile, searchUser, getBalance } = require("@yayawallet/node-sdk");
 
 const app = express();
 
@@ -9,6 +9,15 @@ app.get("/user/profile", async (req, res) => {
     res.send(profile);
   } catch (error) {
     res.status(403).send(error.message);
+  }
+});
+
+app.get("/user/balance", async (req, res) => {
+  try {
+    const balance = await getBalance();
+    res.send(balance);
+  } catch (error) {
+    res.send(error);
   }
 });
 
